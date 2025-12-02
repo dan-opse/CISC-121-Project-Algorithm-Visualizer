@@ -8,7 +8,7 @@
 
 ## Steps to Run
 
-## Hugging Face Link: [](https://huggingface.co/spaces/tannum/binary-search-visualizer)
+## Hugging Face Link: [*click here*](https://huggingface.co/spaces/tannum/binary-search-visualizer)
 
 ## Author & Acknowledgment
 Daniel Cheah
