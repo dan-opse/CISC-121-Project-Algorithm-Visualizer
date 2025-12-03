@@ -30,19 +30,18 @@ def binary_search_with_steps(nums_str, target_str):
         target = int(target_str)
         
         # Check if array is sorted (use <= comparison for robustness)
-        # if not all(nums[i] <= nums[i+1] for i in range(len(nums)-1)):
-        #     return f"Error: Array must be sorted for binary search. Please sort your inputs.\nYour array: {nums}", "", ""
         
         if nums != sorted(nums):
             return "Error: Array must be sorted for binary search. Please sort your inputs.", "", ""
         
-        # Perform binary search with step tracking
+        # Step tracking
         steps = []
         left = 0
         right = len(nums) - 1
         found_index = -1
         step_num = 0
         
+        # Start search
         while left <= right:
             step_num += 1
             mid = (left + right) // 2
@@ -114,18 +113,18 @@ def generate_steps_html(steps, array, target, found_index):
         # Visual array representation
         html += "<div style='display: flex; gap: 5px; margin: 15px 0; flex-wrap: wrap;'>"
         for i, val in enumerate(step['array']):
-            # Determine box color based on position
+            # Box color based on position
             if i == step['mid']:
                 color = '#ffd700'  # Gold for middle
                 border = '3px solid #ff8c00'
                 text_color = 'black'
             elif i >= step['left'] and i <= step['right']:
-                color = '#87ceeb'  # Sky blue for search range
+                color = '#87ceeb'  # Blue for search range
                 border = '2px solid #4682b4'
                 text_color = 'black'
             else:
-                color = '#e0e0e0'  # Standard Light Gray
-                border = '2px solid #999999' # Darker gray border for visibility
+                color = '#e0e0e0'  # Gray for excluded range
+                border = '2px solid #999999'
                 text_color = 'black'
             
             html += f"""
@@ -144,7 +143,7 @@ def generate_steps_html(steps, array, target, found_index):
         html += f"<span style='background: #87ceeb; color: black; padding: 3px 8px; border-radius: 3px;'>Right: {step['right']}</span>"
         html += "</p>"
         
-        # Action or result
+        # Display action or result
         if 'result' in step:
             html += f"<p style='color: #4ade80; font-weight: bold; font-size: 16px;'>{step['result']}</p>"
         elif 'action' in step:
@@ -177,31 +176,48 @@ def generate_steps_html(steps, array, target, found_index):
     return html
 
 
-# Create Gradio Interface
-with gr.Blocks(title="Binary Search Visualizer", theme=gr.themes.Base(primary_hue="blue", secondary_hue="gray").set(
-    body_background_fill="#1a1a1a",
-    body_text_color="#ffffff",
-    block_background_fill="#2b2b2b",
-    block_label_text_color="#ffffff",
-    input_background_fill="#3a3a3a",
-    button_primary_background_fill="#4682b4",
-    button_primary_text_color="#ffffff"
-)) as app:
+# Create Gradio Interface with custom CSS for dark theme
+custom_css = """
+body, .gradio-container {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+}
+.block {
+    background-color: #2b2b2b !important;
+}
+label {
+    color: #ffffff !important;
+}
+input, textarea {
+    background-color: #3a3a3a !important;
+    color: #ffffff !important;
+    border: 1px solid #555 !important;
+}
+button.primary {
+    background-color: #4682b4 !important;
+    color: #ffffff !important;
+}
+.markdown-body {
+    color: #ffffff !important;
+}
+"""
+
+with gr.Blocks(title="Binary Search Visualizer", css=custom_css) as app:
     gr.Markdown("""
     # Binary Search Algorithm Visualizer
     
     **Binary Search** is an efficient algorithm for finding a target value in a **sorted array**.
     It works by repeatedly dividing the search interval in half.
     
-    ### How it works:
+    ### How it works (Divide and Conquer):
     1. Start with the entire sorted array
     2. Compare the target with the middle element
-    3. If equal, we found it!
+    3. If equal, we found it
     4. If target is smaller, search the left half
     5. If target is larger, search the right half
     6. Repeat until found or range is empty
     
-    **Time Complexity**: O(log n) - Much faster than linear search for large arrays!
+    **Time Complexity**: O(log n) - Much faster than linear search for large arrays
     """)
     
     with gr.Row():
@@ -236,7 +252,7 @@ with gr.Blocks(title="Binary Search Visualizer", theme=gr.themes.Base(primary_hu
     1. **Array**: `1, 3, 5, 7, 9, 11, 13, 15` | **Target**: `7` (Found)
     2. **Array**: `2, 4, 6, 8, 10, 12, 14` | **Target**: `5` (Not Found)
     3. **Array**: `10, 20, 30, 40, 50` | **Target**: `10` (Best Case - First comparison)
-    4. **Array**: `1, 2, 3, 4, 5, 6, 7, 8, 9, 10` | **Target**: `1` (Edge Case)
+    4. **Array**: `1, 2, 3, 4, 5, 6, 7, 8, 9, 10` | **Target**: `1` (Edge Case; Worst Case)
     
     ### Important Notes:
     - The array **must be sorted** in ascending order
@@ -244,16 +260,15 @@ with gr.Blocks(title="Binary Search Visualizer", theme=gr.themes.Base(primary_hu
     - Time complexity is O(log n), making it very efficient for large arrays
     
     ---
-    **Created for CISC-121 Project** | Queen's University | 2025
+    **Created for CISC-121** | Queen's University | 2025
     """)
     
-    # Connect the search button to the function
+    # Connect search button to function
     search_btn.click(
         fn=binary_search_with_steps,
         inputs=[array_input, target_input],
         outputs=[result_output, steps_output, complexity_output]
     )
 
-# Launch the app
 if __name__ == "__main__":
     app.launch()
