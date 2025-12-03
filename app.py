@@ -2,8 +2,7 @@
 Binary Search Visualization App
 CISC-121 - Algorithm Visualizer
 Author: Daniel Cheah
-Date: November 25, 2025
-
+Date: December 6, 2025
 This application demonstrates the Binary Search algorithm through
 an interactive visualization using Gradio.
 """
@@ -11,25 +10,31 @@ an interactive visualization using Gradio.
 import gradio as gr
 import json
 
-def binary_search_with_steps(nums, target):
+def binary_search_with_steps(nums_str, target_str):
     """
     Performs binary search and returns visualization data for each step.
     
     Args:
-        array_str (str): Comma-separated numbers representing the sorted array
-        target (str): The target value to search for
+        nums_str: Comma-separated numbers string from input
+        target_str: The target value string to search for
     
     Returns:
         tuple: (result_message, steps_html, complexity_info)
     """
     try:
-        
-        if len(nums) == 0:
+        # Make sure array is not empty and numbers are sorted/exist
+        if not nums_str.strip():
             return "Error: Array cannot be empty", "", ""
+            
+        nums = [int(x.strip()) for x in nums_str.split(',')]
+        target = int(target_str)
         
-        # Check if array is sorted
+        # Check if array is sorted (use <= comparison for robustness)
+        # if not all(nums[i] <= nums[i+1] for i in range(len(nums)-1)):
+        #     return f"Error: Array must be sorted for binary search. Please sort your inputs.\nYour array: {nums}", "", ""
+        
         if nums != sorted(nums):
-            return "Error: Array must be sorted for binary search", "", ""
+            return "Error: Array must be sorted for binary search. Please sort your inputs.", "", ""
         
         # Perform binary search with step tracking
         steps = []
@@ -90,7 +95,7 @@ def binary_search_with_steps(nums, target):
         return result, steps_html, complexity_info
         
     except ValueError:
-        return "Error: Please enter valid numbers", "", ""
+        return "Error: Please enter valid whole integers (no letters or decimals)", "", ""
     except Exception as e:
         return f"Error: {str(e)}", "", ""
 
@@ -98,22 +103,13 @@ def binary_search_with_steps(nums, target):
 def generate_steps_html(steps, array, target, found_index):
     """
     Generates HTML visualization for each step of binary search.
-    
-    Args:
-        steps (list): List of step dictionaries
-        array (list): The search array
-        target (float): Target value
-        found_index (int): Index where target was found (-1 if not found)
-    
-    Returns:
-        str: HTML string with step-by-step visualization
     """
-    html = "<div style='font-family: Arial, sans-serif;'>"
+    html = "<div style='font-family: Arial, sans-serif; background: #2b2b2b; padding: 15px; border-radius: 8px;'>"
     
     for step in steps:
-        html += f"<div style='margin: 20px 0; padding: 15px; background: #f0f8ff; border-left: 4px solid #4682b4; border-radius: 5px;'>"
-        html += f"<h3 style='color: #2c3e50; margin-top: 0;'>Step {step['step']}</h3>"
-        html += f"<p style='margin: 10px 0;'><strong>{step['comparing']}</strong></p>"
+        html += f"<div style='margin: 20px 0; padding: 15px; background: #3a3a3a; border-left: 4px solid #4682b4; border-radius: 5px;'>"
+        html += f"<h3 style='color: #ffffff; margin-top: 0;'>Step {step['step']}</h3>"
+        html += f"<p style='color: #ffffff; margin: 10px 0;'><strong>{step['comparing']}</strong></p>"
         
         # Visual array representation
         html += "<div style='display: flex; gap: 5px; margin: 15px 0; flex-wrap: wrap;'>"
@@ -122,45 +118,57 @@ def generate_steps_html(steps, array, target, found_index):
             if i == step['mid']:
                 color = '#ffd700'  # Gold for middle
                 border = '3px solid #ff8c00'
+                text_color = 'black'
             elif i >= step['left'] and i <= step['right']:
                 color = '#87ceeb'  # Sky blue for search range
                 border = '2px solid #4682b4'
+                text_color = 'black'
             else:
-                color = '#d3d3d3'  # Gray for excluded
-                border = '2px solid #a9a9a9'
+                color = '#e0e0e0'  # Standard Light Gray
+                border = '2px solid #999999' # Darker gray border for visibility
+                text_color = 'black'
             
             html += f"""
             <div style='min-width: 50px; padding: 10px; background: {color}; 
                         border: {border}; border-radius: 5px; text-align: center;'>
-                <div style='font-weight: bold; font-size: 16px;'>{val}</div>
-                <div style='font-size: 10px; color: #666;'>idx {i}</div>
+                <div style='font-weight: bold; font-size: 16px; color: black;'>{val}</div>
+                <div style='font-size: 10px; margin-top:2px; color: black;'>Index {i}</div>
             </div>
             """
         html += "</div>"
         
         # Step information
         html += f"<p style='margin: 10px 0;'>"
-        html += f"<span style='background: #87ceeb; padding: 3px 8px; border-radius: 3px; margin-right: 10px;'>Left: {step['left']}</span>"
-        html += f"<span style='background: #ffd700; padding: 3px 8px; border-radius: 3px; margin-right: 10px;'>Mid: {step['mid']}</span>"
-        html += f"<span style='background: #87ceeb; padding: 3px 8px; border-radius: 3px;'>Right: {step['right']}</span>"
+        html += f"<span style='background: #87ceeb; color: black; padding: 3px 8px; border-radius: 3px; margin-right: 10px;'>Left: {step['left']}</span>"
+        html += f"<span style='background: #ffd700; color: black; padding: 3px 8px; border-radius: 3px; margin-right: 10px;'>Mid: {step['mid']}</span>"
+        html += f"<span style='background: #87ceeb; color: black; padding: 3px 8px; border-radius: 3px;'>Right: {step['right']}</span>"
         html += "</p>"
         
         # Action or result
         if 'result' in step:
-            html += f"<p style='color: #28a745; font-weight: bold; font-size: 16px;'>{step['result']}</p>"
+            html += f"<p style='color: #4ade80; font-weight: bold; font-size: 16px;'>{step['result']}</p>"
         elif 'action' in step:
-            html += f"<p style='color: #333;'><em>{step['action']}</em></p>"
+            html += f"<p style='color: #ffffff;'><em>{step['action']}</em></p>"
         
         html += "</div>"
     
     # Legend
     html += """
-    <div style='margin: 20px 0; padding: 15px; background: #fff; border: 1px solid #ddd; border-radius: 5px;'>
-        <h4>Legend:</h4>
+    <div style='margin: 20px 0; padding: 15px; background: #3a3a3a; border: 2px solid #555; border-radius: 5px;'>
+        <h4 style='margin-top:0; color: white;'>Legend:</h4>
         <div style='display: flex; gap: 20px; flex-wrap: wrap;'>
-            <div><span style='display: inline-block; width: 20px; height: 20px; background: #87ceeb; border: 2px solid #4682b4; vertical-align: middle;'></span> Search Range</div>
-            <div><span style='display: inline-block; width: 20px; height: 20px; background: #ffd700; border: 3px solid #ff8c00; vertical-align: middle;'></span> Middle Element (Current)</div>
-            <div><span style='display: inline-block; width: 20px; height: 20px; background: #d3d3d3; border: 2px solid #a9a9a9; vertical-align: middle;'></span> Excluded Range</div>
+            <div style='color: white;'>
+                <span style='display: inline-block; width: 20px; height: 20px; background: #87ceeb; border: 2px solid #4682b4; vertical-align: middle; margin-right: 5px;'></span> 
+                Search Range
+            </div>
+            <div style='color: white;'>
+                <span style='display: inline-block; width: 20px; height: 20px; background: #ffd700; border: 3px solid #ff8c00; vertical-align: middle; margin-right: 5px;'></span> 
+                Middle Element (Current)
+            </div>
+            <div style='color: white;'>
+                <span style='display: inline-block; width: 20px; height: 20px; background: #e0e0e0; border: 2px solid #999999; vertical-align: middle; margin-right: 5px;'></span> 
+                Excluded Range
+            </div>
         </div>
     </div>
     """
@@ -170,9 +178,17 @@ def generate_steps_html(steps, array, target, found_index):
 
 
 # Create Gradio Interface
-with gr.Blocks(title="Binary Search Visualizer", theme=gr.themes.Soft()) as app:
+with gr.Blocks(title="Binary Search Visualizer", theme=gr.themes.Base(primary_hue="blue", secondary_hue="gray").set(
+    body_background_fill="#1a1a1a",
+    body_text_color="#ffffff",
+    block_background_fill="#2b2b2b",
+    block_label_text_color="#ffffff",
+    input_background_fill="#3a3a3a",
+    button_primary_background_fill="#4682b4",
+    button_primary_text_color="#ffffff"
+)) as app:
     gr.Markdown("""
-    # 🔍 Binary Search Algorithm Visualizer
+    # Binary Search Algorithm Visualizer
     
     **Binary Search** is an efficient algorithm for finding a target value in a **sorted array**.
     It works by repeatedly dividing the search interval in half.
@@ -191,17 +207,17 @@ with gr.Blocks(title="Binary Search Visualizer", theme=gr.themes.Soft()) as app:
     with gr.Row():
         with gr.Column():
             array_input = gr.Textbox(
-                label="Enter Sorted Array (comma-separated)",
+                label="Enter Sorted Array (comma-separated integers)",
                 placeholder="e.g., 2, 5, 8, 12, 16, 23, 38, 45, 56, 67, 78",
                 value="2, 5, 8, 12, 16, 23, 38, 45, 56, 67, 78",
                 lines=2
             )
             target_input = gr.Textbox(
-                label="Enter Target Value",
+                label="Enter Target Integer",
                 placeholder="e.g., 23",
                 value="23"
             )
-            search_btn = gr.Button("🔍 Start Binary Search", variant="primary", size="lg")
+            search_btn = gr.Button("Start Binary Search", variant="primary", size="lg")
         
         with gr.Column():
             result_output = gr.Textbox(
@@ -222,9 +238,9 @@ with gr.Blocks(title="Binary Search Visualizer", theme=gr.themes.Soft()) as app:
     3. **Array**: `10, 20, 30, 40, 50` | **Target**: `10` (Best Case - First comparison)
     4. **Array**: `1, 2, 3, 4, 5, 6, 7, 8, 9, 10` | **Target**: `1` (Edge Case)
     
-    ### ⚠️ Important Notes:
+    ### Important Notes:
     - The array **must be sorted** in ascending order
-    - Works with integers and decimal numbers
+    - Works with **whole integers only**
     - Time complexity is O(log n), making it very efficient for large arrays
     
     ---
