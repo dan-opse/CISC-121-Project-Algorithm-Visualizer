@@ -25,6 +25,10 @@ Test target: 2
 
 ## Problem Breakdown & Computational Thinking (You can add a flowchart and write the four pillars of computational thinking briefly in bullets)
 
+### Flow Chart:
+
+<img width="4800" height="5614" alt="flowchart" src="https://github.com/user-attachments/assets/f75b96a8-0461-4bef-bbbd-170ec0400b9b" />
+
 ### Four Pillars of Computational Thinking:
 
 1. **Decomposition**
