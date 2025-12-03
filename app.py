@@ -176,33 +176,42 @@ def generate_steps_html(steps, array, target, found_index):
     return html
 
 
-# Create Gradio Interface with custom CSS for dark theme
-custom_css = """
-body, .gradio-container {
-    background-color: #1a1a1a !important;
-    color: #ffffff !important;
-}
-.block {
-    background-color: #2b2b2b !important;
-}
-label {
-    color: #ffffff !important;
-}
-input, textarea {
-    background-color: #3a3a3a !important;
-    color: #ffffff !important;
-    border: 1px solid #555 !important;
-}
-button.primary {
-    background-color: #4682b4 !important;
-    color: #ffffff !important;
-}
-.markdown-body {
-    color: #ffffff !important;
-}
-"""
-
-with gr.Blocks(title="Binary Search Visualizer", css=custom_css) as app:
+# Create Gradio Interface - compatible with all Gradio versions
+with gr.Blocks(title="Binary Search Visualizer") as app:
+    # Inject CSS via HTML for compatibility with older Gradio versions
+    gr.HTML("""
+    <style>
+        body, .gradio-container {
+            background-color: #1a1a1a !important;
+            color: #ffffff !important;
+        }
+        .block {
+            background-color: #2b2b2b !important;
+            padding: 20px !important;
+        }
+        label {
+            color: #ffffff !important;
+        }
+        input, textarea {
+            background-color: #3a3a3a !important;
+            color: #ffffff !important;
+            border: 1px solid #555 !important;
+        }
+        button.primary {
+            background-color: #4682b4 !important;
+            color: #ffffff !important;
+        }
+        .markdown-body {
+            color: #ffffff !important;
+        }
+        .markdown-body p, .markdown-body h1, .markdown-body h2, .markdown-body h3, 
+        .markdown-body h4, .markdown-body ul, .markdown-body ol {
+            margin-left: 20px !important;
+            margin-right: 20px !important;
+        }
+    </style>
+    """)
+    
     gr.Markdown("""
     # Binary Search Algorithm Visualizer
     
