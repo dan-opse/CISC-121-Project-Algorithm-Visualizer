@@ -32,24 +32,31 @@ Test target: 2
 ### Four Pillars of Computational Thinking:
 
 1. **Decomposition**
-   - Break the seearch problem into smaller subproblems (divide and conquer)
-   - Cut the array in have every step
-   - Reduce search space by removing half of the remaining elements
-  
+   - **Breaking down the problem:** I separated the project into three distinct components: Input Validation (parsing strings to integers), The Core Algorithm (Binary Search logic), and Visualization (generating HTML for Gradio).
+   - **Step-wise Breakdown:** The search itself is decomposed into smaller repeated steps:
+     1. Calculate the middle index.
+     2. Compare the middle value to the target.
+     3. Decide which half to discard.
+     4. Update pointers (`left` or `right`).
+
 2. **Pattern Recognition**
-   - Recognize that a sorted array has a predictable order
-   - Identify that middle element comparison determines which half to search
-   - Notice the logarithmic reduction pattern (n → n/2 → n/4 → ...)
+   - **Sorted Data Property:** Recognized that in a sorted list, if `mid < target`, the target *cannot* exist to the left. This pattern allows us to ignore half the array safely.
+   - **Repetitive Logic:** The process of "finding the middle" and "shrinking the window" is identical in every step, regardless of array size. This pattern is implemented using a `while` loop that repeats until the pointers cross.
 
 3. **Abstraction**
-   - Focus on the essential comparison logic (target vs. middle element)
-   - Ignore irrelevant details about what the data represents
-   - Use left/right pointers to represent the search boundaries
+   - **Data Abstraction:** The algorithm ignores what the numbers represent (e.g., ages, prices) and focuses purely on their numerical value and index.
+   - **Visualization Abstraction:** For the user interface, I abstracted away the complex memory operations. Instead of showing raw variable states, I used color coding to represent the state:
+     - **Gold:** The current middle element being compared.
+     - **Blue:** The active search range (Left to Right).
+     - **Gray:** The "abstracted" or discarded data that is no longer relevant to the search.
 
-4. **Algorithm Design**
-   - Create a systematic approach: calculate mid, compare, adjust boundaries
-   - Use a while loop that continues until the target is found or search space is exhausted
-   - Define base cases: target found (return index) or not found (return -1)
+4. **Algorithm**
+   - **Input Flow:**
+      - **1)** The user provides a comma-separated string
+      - **2)** The app cleans whitespace and converts to a list of Integers
+      - **3)** The app checks if the list is sorted.
+   - **Processing:** The `binary_search_with_steps` function runs the loop. Instead of just returning a result, it records the state of the array (pointers and colors) into a dictionary at every iteration.
+   - **Output Flow:** The recorded steps are compiled into an HTML string which is rendered by the Gradio interface, providing the user with a step-by-step visual walkthrough and a Big-O complexity analysis.
   
 
 ## Steps to Run
@@ -95,4 +102,6 @@ Visit the [Hugging Face Space](https://huggingface.co/spaces/tannum/binary-searc
 ## Hugging Face Link: [*click here*](https://huggingface.co/spaces/tannum/binary-search-visualizer)
 
 ## Author & Acknowledgment
-Daniel Cheah
+- **Author:** Daniel Cheah
+- **Course:** CISC 121
+
