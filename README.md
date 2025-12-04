@@ -101,7 +101,12 @@ Visit the [Hugging Face Space](https://huggingface.co/spaces/tannum/binary-searc
 
 ## Hugging Face Link: [*click here*](https://huggingface.co/spaces/tannum/binary-search-visualizer)
 
+## AI Usage:
+
+AI (GitHub Copilot, Gemini) was used to:
+- Connect the algorithm (binary search) to the four pillars of computation (AI used: Gemini)
+- Learn/implement gradio interface with HTML elements (AI used: GitHub Copilot)
+
 ## Author & Acknowledgment
 - **Author:** Daniel Cheah
 - **Course:** CISC 121
-
