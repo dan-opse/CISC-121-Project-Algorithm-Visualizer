@@ -104,8 +104,8 @@ Visit the [Hugging Face Space](https://huggingface.co/spaces/tannum/binary-searc
 ## AI Usage:
 
 AI (GitHub Copilot, Gemini) was used to:
-- Connect the algorithm (binary search) to the four pillars of computation (AI used: Gemini)
-- Learn/implement gradio interface with HTML elements (AI used: GitHub Copilot)
+- Connect the algorithm (binary search) to the four pillars of computation (AI used: Gemini; Prompt used: "Explain how the four pillars of computation connect to the binary search algortihm")
+- Learn/implement gradio interface with HTML elements (AI used: GitHub Copilot; Example prompt used: "Implement a gradio boilerplate taking the inputs ... and outputs ...")
 
 ## Author & Acknowledgment
 - **Author:** Daniel Cheah
